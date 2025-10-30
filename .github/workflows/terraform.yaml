@@ -1,0 +1,71 @@
+name: Terraform CI
+on:
+  workflow_dispatch:
+    inputs:
+      terraform_action:
+        description: 'Plan/apply/destroy'
+        required: true
+        default: 'plan'
+        type: choice
+        options:
+          - plan
+          - apply
+          - destroy
+      environment:
+        description: 'Environment to deploy (dev/staging/prod)'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+
+env:
+  terraform_action: ${{ github.event.inputs.terraform_action }}
+  environment: ${{ github.event.inputs.environment }}
+  AWS_REGION: us-east-1
+  terraform_version: 1.13.3
+  working_directory: ./infra
+
+jobs: 
+  terraform:
+    name: 'Terraform ${{ github.event.inputs.terraform_action }}'
+    runs-on: ubuntu-latest
+  
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3       
+        
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+        
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: ${{ env.terraform_version }}
+      
+      - name: Terraform Format Check
+        working-directory: ${{ env.working_directory }}
+        run: terraform fmt -check -recursive
+        continue-on-error: false
+          
+      - name: Terraform Init
+        working-directory: ${{ env.working_directory }}
+        run: terraform init -backend-config=vars/${{ env.environment }}.tfbackend
+        
+      - name: Terraform Plan
+        id: plan
+        working-directory: ${{ env.working_directory }}
+        run: terraform plan -var-file=vars/${{ env.environment }}.tfvars 
+
+      - name: Terraform Apply
+        working-directory: ${{ env.working_directory }}
+        run: terraform ${env.terraform_action} -var-file=vars/${{ env.environment }}.tfvars
+        
+  
+
