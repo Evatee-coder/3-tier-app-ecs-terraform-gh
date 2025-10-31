@@ -3,7 +3,7 @@ locals {
     allocated_storage       = "30"
     max_allocated_storage   = 100
     engine_version          = "14.15"
-    engine                 = "postgres"
+    engine                  = "postgres"
     instance_class          = "db.t3.small"
     ca_cert_name            = "rds-ca-rsa2048-g1"
     backup_retention_period = 7
@@ -19,7 +19,7 @@ locals {
       template_file = var.flask_app_template_file
       vars = {
         # aws_ecr_repository            = aws_ecr_repository.python_app.repository_url
-        aws_ecr_repository           = aws_ecr_repository.python_app["flask"].repository_url
+        aws_ecr_repository            = aws_ecr_repository.python_app["flask"].repository_url
         tag                           = var.flask_app_tag
         container_name                = var.flask_app_container_name
         aws_cloudwatch_log_group_name = "/aws/ecs/${var.environment}-flask"
@@ -38,7 +38,7 @@ locals {
       template_file = var.nginx_template_file
       vars = {
         # aws_ecr_repository            = aws_ecr_repository.nginx.repository_url
-        aws_ecr_repository           = aws_ecr_repository.python_app["nginx"].repository_url
+        aws_ecr_repository            = aws_ecr_repository.python_app["nginx"].repository_url
         tag                           = var.nginx_tag
         container_name                = var.nginx_container_name
         aws_cloudwatch_log_group_name = "/aws/ecs/${var.environment}-nginx"
@@ -52,7 +52,7 @@ locals {
       template_file = var.redis_template_file
       vars = {
         # aws_ecr_repository            = aws_ecr_repository.redis.repository_url
-        aws_ecr_repository           = aws_ecr_repository.python_app["redis"].repository_url
+        aws_ecr_repository            = aws_ecr_repository.python_app["redis"].repository_url
         tag                           = var.redis_tag
         container_name                = var.redis_container_name
         aws_cloudwatch_log_group_name = "/aws/ecs/${var.environment}-redis"
@@ -60,7 +60,7 @@ locals {
       }
     }
   ]
-  ecs_service_map = {for service in local.ecs_services : service.name => service}
+  ecs_service_map = { for service in local.ecs_services : service.name => service }
 
 
   # flask = 

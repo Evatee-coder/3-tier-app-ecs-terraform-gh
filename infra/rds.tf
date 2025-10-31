@@ -15,7 +15,7 @@ resource "aws_kms_alias" "rds_kms_alias" {
 
 # RDS instance for dev environment
 resource "aws_db_instance" "postgres" {
-  count                 = var.environment == "dev" ? 1 : 0
+  count = var.environment == "dev" ? 1 : 0
   # condition ? value_if_true : value_if_false -> ternary operator
   identifier            = "${var.environment}-${var.app_name}-db"
   allocated_storage     = lookup(local.db_data, "allocated_storage", var.db_default_settings.allocated_storage)
@@ -32,7 +32,7 @@ resource "aws_db_instance" "postgres" {
   storage_encrypted     = true
   storage_type          = "gp3"
   kms_key_id            = aws_kms_key.rds_kms.arn
-  skip_final_snapshot     = true
+  skip_final_snapshot   = true
   vpc_security_group_ids = [
     aws_security_group.rds.id
   ]
@@ -62,7 +62,7 @@ resource "aws_rds_cluster" "postgres" {
   preferred_backup_window = "07:00-09:00"
   vpc_security_group_ids  = [aws_security_group.rds.id]
   db_subnet_group_name    = aws_db_subnet_group.postgres.id
-   storage_encrypted       = true
+  storage_encrypted       = true
   kms_key_id              = aws_kms_key.rds_kms.arn
   skip_final_snapshot     = true
 
@@ -72,11 +72,11 @@ resource "aws_rds_cluster" "postgres" {
 }
 
 resource "aws_rds_cluster_instance" "postgres_writer" {
-  count                = var.environment != "dev" ? 1 : 0
-  identifier           = "${var.environment}-${var.app_name}-writer"
-  cluster_identifier   = aws_rds_cluster.postgres[0].id
+  count              = var.environment != "dev" ? 1 : 0
+  identifier         = "${var.environment}-${var.app_name}-writer"
+  cluster_identifier = aws_rds_cluster.postgres[0].id
   # instance_class       = lookup(local.db_data, "instance_class", var.db_default_settings.instance_class)
-  instance_class = "db.r5.large"
+  instance_class       = "db.r5.large"
   engine               = aws_rds_cluster.postgres[0].engine
   engine_version       = aws_rds_cluster.postgres[0].engine_version
   publicly_accessible  = false
@@ -90,11 +90,11 @@ resource "aws_rds_cluster_instance" "postgres_writer" {
 }
 
 resource "aws_rds_cluster_instance" "postgres_reader" {
-  count                = var.environment != "dev" ? 1 : 0
-  identifier           = "${var.environment}-${var.app_name}-reader"
-  cluster_identifier   = aws_rds_cluster.postgres[0].id
+  count              = var.environment != "dev" ? 1 : 0
+  identifier         = "${var.environment}-${var.app_name}-reader"
+  cluster_identifier = aws_rds_cluster.postgres[0].id
   # instance_class       = lookup(local.db_data, "instance_class", var.db_default_settings.instance_class)
-  instance_class = "db.r5.large"
+  instance_class       = "db.r5.large"
   engine               = aws_rds_cluster.postgres[0].engine
   engine_version       = aws_rds_cluster.postgres[0].engine_version
   publicly_accessible  = false
