@@ -1,4 +1,6 @@
 name: Terraform CI
+
+
 on:
   workflow_dispatch:
     inputs:
@@ -24,9 +26,11 @@ on:
 env:
   terraform_action: ${{ github.event.inputs.terraform_action }}
   environment: ${{ github.event.inputs.environment }}
-  AWS_REGION: us-east-1
   terraform_version: 1.13.3
   working_directory: ./infra
+  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  aws-region: us-east-1
 
 jobs: 
   terraform:
@@ -35,17 +39,10 @@ jobs:
   
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3       
-        
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
+        uses: actions/checkout@v3      
         
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: ${{ env.terraform_version }}
       
