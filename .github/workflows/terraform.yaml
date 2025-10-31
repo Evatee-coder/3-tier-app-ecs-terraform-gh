@@ -28,9 +28,9 @@ env:
   environment: ${{ github.event.inputs.environment }}
   terraform_version: 1.13.3
   working_directory: ./infra
-  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  aws-region: us-east-1
+  AWS-ACCESS-KEY-ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS-SECRET-ACCESS-KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS-REGION: us-east-1
 
 jobs: 
   terraform:
@@ -39,8 +39,15 @@ jobs:
   
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3      
+        uses: actions/checkout@v3  
         
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          AWS-ACCESS-KEY-ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS-SECRET-ACCESS-KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS-REGION: ${{ env.AWS_REGION }}
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
