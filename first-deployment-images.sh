@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Variables
-AWS_REGION="ap-south-1"
-AWS_ACCOUNT_ID="879381241087"
+AWS_REGION="us-east-1"
+AWS_ACCOUNT_ID="216989097838"
 environment="dev"
 app_name="app"
 REPOSITORY_NAME_APP="${environment}-${app_name}-flask"

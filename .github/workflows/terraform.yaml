@@ -69,7 +69,7 @@ jobs:
 
       - name: Terraform Apply
         working-directory: ${{ env.working_directory }}
-        run: terraform ${env.terraform_action} -var-file=vars/${{ env.environment }}.tfvars
+        run: terraform ${{ env.terraform_action }} -var-file=vars/${{ env.environment }}.tfvars
         
   
 
