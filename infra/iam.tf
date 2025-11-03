@@ -17,6 +17,46 @@ data "aws_iam_policy_document" "ecs_task_execution_role" {
   }
 }
 
+
+resource "aws_iam_role_policy" "ecs_task_execution_role" {
+  name = "${var.environment}-ecs_task_execution_policy"
+  role = aws_iam_role.ecs_task_execution_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "ecr:GetAuthorizationToken",
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchGetImage",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "secretsmanager:GetSecretValue"  # Read-only instead of *
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "ssm:GetParameter",              # Read-only instead of *
+          "ssm:GetParameters",
+          "ssm:GetParametersByPath"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
 # role attachments with aws policys
 resource "aws_iam_role_policy_attachment" "ecs_task_execution_role" {
   role       = aws_iam_role.ecs_task_execution_role.name
@@ -24,6 +64,30 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_role" {
 }
 
 
+# resource "aws_iam_role_policy" "ecs_task_execution_role" {
+#   name = "${var.environment}-ecs_task_execution_policy"
+#   #name   = "${var.env}-${var.app_name}-ecs-task-execution-policy"
+#   role   = aws_iam_role.ecs_task_execution_role.id
+
+#   policy = jsonencode({
+#     Version = "2012-10-17"
+#     Statement = [
+#       {
+#         Effect = "Allow"
+#         Action = [
+#           "ecr:GetAuthorizationToken",
+#           "ecr:BatchCheckLayerAvailability",
+#           "ecr:GetDownloadUrlForLayer",
+#           "ecr:BatchGetImage",
+#           "logs:CreateLogStream",
+#           "logs:PutLogEvents",
+#           "secretsmanager:GetSecretValue"
+#         ]
+#         Resource = "*"
+#       }
+#     ]
+#   })
+# }
 
 
 
@@ -41,6 +105,11 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_role" {
 
 
 
+
+
+
+
+#### Akhilesh verison - previous code deleted ####
 
 
 
