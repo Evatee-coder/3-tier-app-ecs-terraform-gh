@@ -14,7 +14,7 @@ on:
 
 env:
   environment: ${{ github.event.inputs.environment }}
-  region: "ap-south-1"
+  region: "us-east-1"
   secret: ${{ github.event.inputs.deploy_secret }}
 
 jobs:
