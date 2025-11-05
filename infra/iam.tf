@@ -40,14 +40,14 @@ resource "aws_iam_role_policy" "ecs_task_execution_role" {
       {
         Effect = "Allow"
         Action = [
-          "secretsmanager:GetSecretValue"  # Read-only instead of *
+          "secretsmanager:GetSecretValue" # Read-only instead of *
         ]
         Resource = "*"
       },
       {
         Effect = "Allow"
         Action = [
-          "ssm:GetParameter",              # Read-only instead of *
+          "ssm:GetParameter", # Read-only instead of *
           "ssm:GetParameters",
           "ssm:GetParametersByPath"
         ]
